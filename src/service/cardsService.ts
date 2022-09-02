@@ -6,8 +6,10 @@ import {
     TransactionTypes,
     findById as cardFindById
 } from "../repositories/cardRepository.js";
+import { findByCardId } from '../repositories/paymentRepository.js';
+import { findByCardId as recharges } from '../repositories/rechargeRepository.js';
 import Cryptr from 'cryptr';
-import { number } from 'joi';
+
 
 
 const cryptr = new Cryptr('myTotallySecretKey')
@@ -53,28 +55,47 @@ export async function createCards(id: number, cardType: TransactionTypes) {
 export async function activateCards(id: number, cvc: string, password: string) {
     const registeredCard = await cardFindById(id)
     const currentDate = dayjs().locale('pt-br').format('MM-YY')
-   
+
     if (!registeredCard) {
-        throw {code: 'Not Found'}
+        throw { code: 'Not Found' }
     }
-    if(registeredCard.expirationDate < currentDate || password.length != 4){
-        throw {code: 'Unauthorized'}
+    if (registeredCard.expirationDate < currentDate || password.length != 4) {
+        throw { code: 'Unauthorized' }
     }
-    if(registeredCard.password != null){
-        throw {code: 'Unauthorized'}
+    if (registeredCard.password != null) {
+        throw { code: 'Unauthorized' }
     }
     const encryptedCvc = registeredCard.securityCode
 
     const decryptedString = cryptr.decrypt(encryptedCvc);
-    if(cvc != decryptedString){
-        throw {code: 'Unauthorized'}
+    if (cvc != decryptedString) {
+        throw { code: 'Unauthorized' }
     }
-   
-   const encryptedPassword = cryptr.encrypt(password);
-   const datas = {
-    password: encryptedPassword,
-    isBlocked: false
-   }
-   return datas
+
+    const encryptedPassword = cryptr.encrypt(password);
+    const datas = {
+        password: encryptedPassword,
+        isBlocked: false
+    }
+    return datas
 }
 
+export async function findBalance(id: number) {
+    const registeredCard = await cardFindById(id)
+    if (!registeredCard) {
+        throw { code: 'Not Found' }
+    }
+
+    const resultPayments = await findByCardId(id)
+    const sumShopping = resultPayments.reduce((sum, a) => sum + a.amount, 0);
+    const resultRecharges = await recharges(id)
+    const sumRecharges = resultRecharges.reduce((sum, a) => sum + a.amount, 0);
+    const balance = sumRecharges - sumShopping
+
+    const result = {
+        balance: balance,
+        transactions: resultPayments,
+        recharges: resultRecharges
+    }
+    return result 
+}

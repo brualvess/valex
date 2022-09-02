@@ -21,8 +21,7 @@ export async function findByCardId(cardId: number) {
     `,
     [cardId]
   );
-
-  return result.rows;
+  return result.rows; 
 }
 
 export async function insert(paymentData: PaymentInsertData) {
