@@ -5,4 +5,10 @@ const schemaCard =  joi.object({
 	cardType: joi.string().valid('groceries', 'restaurant', 'transport',
      'education', 'health').required()
 });
-export default schemaCard
+
+const schemaActivateCard =joi.object({
+	id: joi.number().required(),
+	cvc: joi.string().length(3).required(),
+	password: joi.string().pattern(/^[0-9]+$/).required()
+});
+export {schemaCard, schemaActivateCard}
