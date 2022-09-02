@@ -1,7 +1,7 @@
 import {
     createCards,
     activateCards,
-    findBalance
+    findBalanceTransaction
 } from "../service/cardsService.js";
 import { Request, Response } from "express";
 import {
@@ -40,10 +40,10 @@ export async function activateCard(req: Request, res: Response) {
         res.sendStatus(500)
     }
 }
-export async function getBalance(req: Request, res: Response) {
+export async function getBalanceTransaction(req: Request, res: Response) {
     const id = parseInt(req.params.id)
     try{
-       const result = await findBalance(id)
+       const result = await findBalanceTransaction(id)
         res.status(200).send(result)
     }catch(error){
         if (error.code === 'Not Found') {

@@ -80,7 +80,7 @@ export async function activateCards(id: number, cvc: string, password: string) {
     return datas
 }
 
-export async function findBalance(id: number) {
+export async function findBalanceTransaction(id: number) {
     const registeredCard = await cardFindById(id)
     if (!registeredCard) {
         throw { code: 'Not Found' }
