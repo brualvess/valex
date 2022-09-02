@@ -14,7 +14,23 @@ import Cryptr from 'cryptr';
 
 const cryptr = new Cryptr('myTotallySecretKey')
 
-
+export async function validates(id:number){
+    const registeredCard = await cardFindById(id)
+    if (!registeredCard) {
+        throw { code: 'Not Found' }
+    }
+    const currentDate = dayjs().locale('pt-br').format('MM-YY')
+    if (registeredCard.expirationDate < currentDate) {
+        throw { code: 'Unauthorized' }
+    }
+}
+export async function validateSenhaCard(id:number, password:string ){
+    const datasCard = await cardFindById(id)
+    const decryptePassword = cryptr.decrypt(datasCard.password);
+    if(decryptePassword !== password){
+     throw { code: 'Unauthorized' }
+    }
+}
 export async function createCards(id: number, cardType: TransactionTypes) {
     const registeredEmployees = await findById(id)
     const verifyCardType = await findByTypeAndEmployeeId(cardType, id)
@@ -54,12 +70,8 @@ export async function createCards(id: number, cardType: TransactionTypes) {
 
 export async function activateCards(id: number, cvc: string, password: string) {
     const registeredCard = await cardFindById(id)
-    const currentDate = dayjs().locale('pt-br').format('MM-YY')
-
-    if (!registeredCard) {
-        throw { code: 'Not Found' }
-    }
-    if (registeredCard.expirationDate < currentDate || password.length != 4) {
+    await validates(id)
+    if (password.length != 4) {
         throw { code: 'Unauthorized' }
     }
     if (registeredCard.password != null) {
@@ -98,4 +110,16 @@ export async function findBalanceTransaction(id: number) {
         recharges: resultRecharges
     }
     return result 
+}
+export async function block (id: number, password: string){
+    const datasCard = await cardFindById(id)
+   await validates(id)
+   if( datasCard.isBlocked === true){
+    throw { code: 'Unauthorized' }
+   }
+  await validateSenhaCard(id, password)
+  const update = {
+    isBlocked : true
+  }
+return update
 }
