@@ -16,6 +16,8 @@ import {
 import { keyApi } from './middlewares/keyValidation.js';
 import recharges from './controllers/rechargesControllers.js';
 import schemaRecharges from './schemas/rechargesSchema.js';
+import schemaPayments from './schemas/paymentsSchema.js';
+import payments from './controllers/paymentsControllers.js';
 
 const router = Router()
 
@@ -28,6 +30,6 @@ router.put('/unblockCard', joiValidation(schemaBlocksCard), unblockCard)
 // routes recharges
 router.post('/recharges',joiValidation(schemaRecharges),keyApi, recharges)
 //routes payments
-router.post('/payments',joiValidation)
+router.post('/payments',joiValidation(schemaPayments), payments)
 
 export default router

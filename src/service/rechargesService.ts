@@ -2,9 +2,9 @@ import {findById} from "../repositories/cardRepository.js";
 import { validates } from "./cardsService.js";
 
 export default async function recharge (id: number, amount:number){
-    const registeredCard = await findById(id)
+    const getCard = await findById(id)
    await validates(id)
-    if(registeredCard.isBlocked === true){
+    if(getCard.isBlocked === true){
         throw { code: 'Unauthorized' }
     }
     const response = {
