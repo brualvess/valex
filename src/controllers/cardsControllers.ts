@@ -2,7 +2,8 @@ import {
     createCards,
     activateCards,
     findBalanceTransaction,
-    block
+    block,
+    unblock
 } from "../service/cardsService.js";
 import { Request, Response } from "express";
 import {
@@ -69,6 +70,24 @@ export async function blockCard(req:Request, res:Response){
         }else if (error.code === 'Unauthorized'){
            return res.sendStatus(401)
         }
+        res.sendStatus(500)
+    }
+
+}
+export async function unblockCard(req:Request, res:Response){
+    const {id, password} = req.body
+    try{
+        const result = await unblock(id, password)
+        await update (id, result)
+        res.status(200).send('card unlocked successfully!')
+    }catch(error){
+        if (error.code === 'Not Found') {
+           
+            return res.sendStatus(404)
+        }else if (error.code === 'Unauthorized'){
+           return res.sendStatus(401)
+        }
+
         res.sendStatus(500)
     }
 

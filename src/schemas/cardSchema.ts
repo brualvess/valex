@@ -11,8 +11,8 @@ const schemaActivateCard =joi.object({
 	cvc: joi.string().length(3).required(),
 	password: joi.string().pattern(/^[0-9]+$/).required()
 });
-const schemaBlockCard = joi.object({
+const schemaBlocksCard = joi.object({
 	id: joi.number().required(),
 	password: joi.string().pattern(/^[0-9]+$/).required()
 });
-export {schemaCard, schemaActivateCard, schemaBlockCard}
+export {schemaCard, schemaActivateCard, schemaBlocksCard}

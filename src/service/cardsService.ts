@@ -123,3 +123,15 @@ export async function block (id: number, password: string){
   }
 return update
 }
+export async function unblock(id:number, password:string) {
+    await validates(id)
+    await validateSenhaCard(id, password)
+    const datasCard = await cardFindById(id)
+    if( datasCard.isBlocked === false){
+        throw { code: 'Unauthorized' }
+       }
+       const update = {
+        isBlocked : false
+      }
+    return update
+}
