@@ -92,7 +92,7 @@ Nessa rota, empresas com uma chave de API válida podem recarregar cartões de s
 ```
 ### Compras
 **Fazer pagamentos com o cartão 
-(/payments ) [POST]**
+( /payments ) [POST]**
 
 Nessa rota, funcionários podem comprar em Points of Sale (maquininhas). Para uma compra em um POS ser efetuada precisamos do identificador do cartão utilizado e da senha do mesmo, do identificador do estabelecimento e do valor da compra.
 
